@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Menu, X, ChevronUp } from 'lucide-react';
+import { Menu, X, ChevronUp, Mail, Phone } from 'lucide-react';
 import Footer from './Footer';
 
 type Section = 'about' | 'services' | 'contact';
@@ -18,6 +18,7 @@ function App() {
   const [currentSloganIndex, setCurrentSloganIndex] = useState(0);
   const [activeSection, setActiveSection] = useState<Section>('about');
   const [activeServiceTab, setActiveServiceTab] = useState<ServiceTab>('catering');
+  const [showFooter, setShowFooter] = useState(false);
 
   const slogans = [
     { service: 'CATERING', slogan: 'Excellence in Every Bite' },
@@ -90,9 +91,13 @@ function App() {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollPercentage = (currentScrollY + windowHeight) / documentHeight;
 
       setScrolled(currentScrollY > 100);
       setShowScrollTop(currentScrollY > 400);
+      setShowFooter(scrollPercentage > 0.8);
 
       if (currentScrollY < 100) {
         setNavbarVisible(true);
@@ -293,12 +298,22 @@ function App() {
             </button>
           </div>
 
-          <button
-            className="hidden md:block px-5 py-2 bg-white text-[#0D2343] rounded-full hover:bg-[#0D2343] hover:text-white hover:ring-2 hover:ring-white transition-all duration-300 font-medium text-sm shadow-md hover:shadow-lg flex-shrink-0"
-            onClick={() => navigateToSection('contact')}
-          >
-            Get Quote
-          </button>
+          <div className="hidden md:flex items-center gap-3 text-white text-sm flex-shrink-0">
+            <a
+              href="mailto:welcome@alliveteam.com"
+              className="flex items-center gap-2 hover:text-[#BC9060] transition-all duration-300"
+            >
+              <Mail size={18} />
+              <span className="hidden lg:block">welcome@alliveteam.com</span>
+            </a>
+            <a
+              href="tel:+966583263520"
+              className="flex items-center gap-2 hover:text-[#BC9060] transition-all duration-300"
+            >
+              <Phone size={18} />
+              <span className="hidden lg:block">+966 58 326 3520</span>
+            </a>
+          </div>
 
           <button
             className="md:hidden text-white transition-all duration-300 flex-shrink-0"
@@ -341,12 +356,22 @@ function App() {
               >
                 Contact
               </button>
-              <button
-                onClick={() => navigateToSection('contact')}
-                className="mx-4 my-2 px-5 py-2 bg-white text-[#0D2343] rounded-full hover:bg-[#0D2343] hover:text-white hover:ring-2 hover:ring-white transition-all duration-300 font-medium text-sm text-center"
-              >
-                Get Quote
-              </button>
+              <div className="flex flex-col gap-2 px-6 py-2 border-t border-white/10 mt-2">
+                <a
+                  href="mailto:welcome@alliveteam.com"
+                  className="flex items-center gap-2 text-white hover:text-[#BC9060] transition-all duration-300"
+                >
+                  <Mail size={18} />
+                  <span>welcome@alliveteam.com</span>
+                </a>
+                <a
+                  href="tel:+966583263520"
+                  className="flex items-center gap-2 text-white hover:text-[#BC9060] transition-all duration-300"
+                >
+                  <Phone size={18} />
+                  <span>+966 58 326 3520</span>
+                </a>
+              </div>
             </div>
           </div>
         )}
@@ -418,7 +443,7 @@ function App() {
         ))}
       </div>
 
-      <Footer />
+      <Footer visible={showFooter} />
 
       <button
         onClick={scrollToTop}

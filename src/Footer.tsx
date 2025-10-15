@@ -1,52 +1,85 @@
-function Footer() {
+import { Mail, Phone } from 'lucide-react';
+
+interface FooterProps {
+  visible: boolean;
+}
+
+function Footer({ visible }: FooterProps) {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <footer className="w-full bg-[#0D2343] border-t border-[#0D2343]/30 py-6">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <img
-            src="/assets/logo.svg"
-            alt="Allive Logo"
-            className="h-8 w-auto cursor-pointer hover:opacity-80 transition-all duration-300"
-            onClick={scrollToTop}
-          />
+    <footer
+      className="fixed bottom-0 left-0 right-0 z-40 transition-all duration-500"
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateY(0)' : 'translateY(100%)',
+        pointerEvents: visible ? 'auto' : 'none'
+      }}
+    >
+      <div
+        className="w-full px-6 py-4"
+        style={{
+          backgroundColor: 'rgba(13, 35, 67, 0.9)',
+          backdropFilter: 'blur(12px)',
+          boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.3)',
+          borderTop: '1px solid rgba(255, 255, 255, 0.1)'
+        }}
+      >
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <img
+              src="/assets/logo.svg"
+              alt="Allive Logo"
+              className="h-8 w-auto cursor-pointer hover:opacity-80 transition-all duration-300 flex-shrink-0"
+              onClick={scrollToTop}
+            />
 
-          <div className="flex items-center gap-6">
-            <a
-              href="#about"
-              className="text-white hover:text-[#BC9060] transition-all duration-300 text-sm font-medium"
-            >
-              About
-            </a>
-            <a
-              href="#services"
-              className="text-white hover:text-[#BC9060] transition-all duration-300 text-sm font-medium"
-            >
-              Services
-            </a>
-            <a
-              href="#contact"
-              className="text-white hover:text-[#BC9060] transition-all duration-300 text-sm font-medium"
-            >
-              Contact
-            </a>
+            <div className="flex items-center gap-6">
+              <a
+                href="#about"
+                className="text-white hover:text-[#BC9060] transition-all duration-300 text-sm font-medium"
+              >
+                About
+              </a>
+              <a
+                href="#services"
+                className="text-white hover:text-[#BC9060] transition-all duration-300 text-sm font-medium"
+              >
+                Services
+              </a>
+              <a
+                href="#contact"
+                className="text-white hover:text-[#BC9060] transition-all duration-300 text-sm font-medium"
+              >
+                Contact
+              </a>
+            </div>
+
+            <div className="flex items-center gap-4 text-white text-sm flex-shrink-0">
+              <a
+                href="mailto:welcome@alliveteam.com"
+                className="flex items-center gap-2 hover:text-[#BC9060] transition-all duration-300"
+              >
+                <Mail size={18} />
+                <span className="hidden lg:block">welcome@alliveteam.com</span>
+              </a>
+              <a
+                href="tel:+966583263520"
+                className="flex items-center gap-2 hover:text-[#BC9060] transition-all duration-300"
+              >
+                <Phone size={18} />
+                <span className="hidden lg:block">+966 58 326 3520</span>
+              </a>
+            </div>
           </div>
 
-          <button
-            onClick={scrollToTop}
-            className="px-5 py-2 bg-white text-[#0D2343] rounded-full hover:bg-[#BC9060] hover:text-white transition-all duration-300 font-medium text-sm shadow-md"
-          >
-            Get Quote
-          </button>
-        </div>
-
-        <div className="mt-6 pt-4 border-t border-white/10 text-center">
-          <p className="text-white/70 text-sm">
-            © 2025 Allive Team. All rights reserved.
-          </p>
+          <div className="mt-4 pt-3 border-t border-white/10 text-center">
+            <p className="text-white/70 text-xs md:text-sm">
+              © 2025 Allive Team
+            </p>
+          </div>
         </div>
       </div>
     </footer>
