@@ -34,6 +34,24 @@ function App() {
 
   const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
 
+  useEffect(() => {
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+
+    window.scrollTo(0, 0);
+
+    const handleBeforeUnload = () => {
+      window.scrollTo(0, 0);
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
+
   const sectionImages = {
     about: [1, 2, 3, 4],
     services: {
@@ -211,6 +229,10 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleLogoClick = () => {
+    navigateToSection('about');
+  };
+
   const navigateToSection = (section: Section) => {
     if (section === activeSection) return;
 
@@ -321,12 +343,12 @@ function App() {
           <img
             src="/assets/logo.svg"
             alt="Allive Logo"
-            className="transition-all duration-300 hover:opacity-80 cursor-pointer flex-shrink-0"
+            className="transition-all duration-300 hover:scale-105 hover:opacity-80 cursor-pointer flex-shrink-0"
             style={{
               height: scrolled ? '32px' : '40px',
               width: 'auto'
             }}
-            onClick={scrollToTop}
+            onClick={handleLogoClick}
           />
 
           <div className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
@@ -535,7 +557,7 @@ function App() {
         <ChevronUp size={24} />
       </button>
 
-      <Footer visible={showFooter && !isIdle} setIsHoveringFooter={setIsHoveringFooter} />
+      <Footer visible={showFooter && !isIdle} setIsHoveringFooter={setIsHoveringFooter} navigateToSection={navigateToSection} />
     </div>
   );
 }

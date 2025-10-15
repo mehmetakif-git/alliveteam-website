@@ -1,13 +1,16 @@
 import { Mail, Phone } from 'lucide-react';
 
+type Section = 'about' | 'services' | 'contact';
+
 interface FooterProps {
   visible: boolean;
   setIsHoveringFooter: (hovering: boolean) => void;
+  navigateToSection: (section: Section) => void;
 }
 
-function Footer({ visible, setIsHoveringFooter }: FooterProps) {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+function Footer({ visible, setIsHoveringFooter, navigateToSection }: FooterProps) {
+  const handleLogoClick = () => {
+    navigateToSection('about');
   };
 
   return (
@@ -39,29 +42,29 @@ function Footer({ visible, setIsHoveringFooter }: FooterProps) {
             <img
               src="/assets/logo.svg"
               alt="Allive Logo"
-              className="h-8 w-auto cursor-pointer hover:opacity-80 transition-all duration-300 flex-shrink-0"
-              onClick={scrollToTop}
+              className="h-8 w-auto cursor-pointer hover:scale-105 hover:opacity-80 transition-all duration-300 flex-shrink-0"
+              onClick={handleLogoClick}
             />
 
             <div className="flex items-center gap-6">
-              <a
-                href="#about"
-                className="text-white hover:text-[#BC9060] transition-all duration-300 text-sm font-medium"
+              <button
+                onClick={() => navigateToSection('about')}
+                className="text-white hover:text-[#BC9060] transition-all duration-300 text-sm font-medium cursor-pointer"
               >
                 About
-              </a>
-              <a
-                href="#services"
-                className="text-white hover:text-[#BC9060] transition-all duration-300 text-sm font-medium"
+              </button>
+              <button
+                onClick={() => navigateToSection('services')}
+                className="text-white hover:text-[#BC9060] transition-all duration-300 text-sm font-medium cursor-pointer"
               >
                 Services
-              </a>
-              <a
-                href="#contact"
-                className="text-white hover:text-[#BC9060] transition-all duration-300 text-sm font-medium"
+              </button>
+              <button
+                onClick={() => navigateToSection('contact')}
+                className="text-white hover:text-[#BC9060] transition-all duration-300 text-sm font-medium cursor-pointer"
               >
                 Contact
-              </a>
+              </button>
             </div>
 
             <div className="flex items-center gap-4 text-white text-sm flex-shrink-0">
