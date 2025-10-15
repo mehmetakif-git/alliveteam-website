@@ -204,7 +204,7 @@ function App() {
         }}
       >
         <div
-          className="flex items-center gap-2 px-6 py-3 border transition-all"
+          className="flex items-center justify-between w-full px-6 py-3 border transition-all"
           style={{
             borderRadius: scrolled ? '40px' : '0px',
             borderColor: scrolled ? 'rgba(13, 35, 67, 0.3)' : 'rgba(13, 35, 67, 0.2)',
@@ -218,7 +218,7 @@ function App() {
           <img
             src="/assets/logo.svg"
             alt="Allive Logo"
-            className="transition-all duration-300 hover:opacity-80 cursor-pointer"
+            className="transition-all duration-300 hover:opacity-80 cursor-pointer flex-shrink-0"
             style={{
               height: scrolled ? '32px' : '40px',
               width: 'auto'
@@ -226,7 +226,7 @@ function App() {
             onClick={scrollToTop}
           />
 
-          <div className="hidden md:flex items-center gap-1 ml-4">
+          <div className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
             {navItems.map((item) => (
               <button
                 key={item.label}
@@ -239,14 +239,14 @@ function App() {
           </div>
 
           <button
-            className="ml-4 hidden md:block px-5 py-2 bg-white text-[#0D2343] rounded-full hover:bg-[#0D2343] hover:text-white hover:ring-2 hover:ring-white transition-all duration-300 font-medium text-sm shadow-md hover:shadow-lg"
+            className="hidden md:block px-5 py-2 bg-white text-[#0D2343] rounded-full hover:bg-[#0D2343] hover:text-white hover:ring-2 hover:ring-white transition-all duration-300 font-medium text-sm shadow-md hover:shadow-lg flex-shrink-0"
             onClick={() => scrollToImage(16)}
           >
             Get Quote
           </button>
 
           <button
-            className="md:hidden ml-4 text-white transition-all duration-300"
+            className="md:hidden text-white transition-all duration-300 flex-shrink-0"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
