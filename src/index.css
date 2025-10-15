@@ -66,3 +66,9 @@ img {
   scrollbar-width: thin;
   scrollbar-color: #BC9060 #0D2343;
 }
+
+@media (max-width: 768px) {
+  nav {
+    width: 90% !important;
+  }
+}

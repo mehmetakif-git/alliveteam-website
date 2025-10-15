@@ -69,7 +69,7 @@ function App() {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      setScrolled(currentScrollY > 50);
+      setScrolled(currentScrollY > 100);
       setShowScrollTop(currentScrollY > 400);
 
       if (currentScrollY < 100) {
@@ -194,11 +194,27 @@ function App() {
       </div>
 
       <nav
-        className={`fixed left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ease-out ${
-          navbarVisible ? 'top-6' : '-top-32'
+        className={`fixed left-1/2 -translate-x-1/2 z-50 transition-all ease-out ${
+          navbarVisible ? (scrolled ? 'top-5' : 'top-0') : '-top-32'
         }`}
+        style={{
+          width: scrolled ? 'min(50%, 900px)' : '100%',
+          transitionDuration: '500ms',
+          transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
+        }}
       >
-        <div className="flex items-center gap-2 px-6 py-3 rounded-full border border-[#0D2343]/20 shadow-lg backdrop-blur-md transition-all duration-300 bg-[#0D2343]/90">
+        <div
+          className="flex items-center gap-2 px-6 py-3 border transition-all"
+          style={{
+            borderRadius: scrolled ? '40px' : '0px',
+            borderColor: scrolled ? 'rgba(13, 35, 67, 0.3)' : 'rgba(13, 35, 67, 0.2)',
+            boxShadow: scrolled ? '0 10px 40px rgba(0, 0, 0, 0.3)' : '0 4px 6px rgba(0, 0, 0, 0.1)',
+            backdropFilter: scrolled ? 'blur(12px)' : 'blur(8px)',
+            backgroundColor: 'rgba(13, 35, 67, 0.9)',
+            transitionDuration: '500ms',
+            transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
+          }}
+        >
           <img
             src="/assets/logo.svg"
             alt="Allive Logo"
