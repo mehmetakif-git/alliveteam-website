@@ -9,6 +9,13 @@ function App() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [preloaderVisible, setPreloaderVisible] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
+  const [currentSloganIndex, setCurrentSloganIndex] = useState(0);
+
+  const slogans = [
+    { service: 'CATERING', slogan: 'Excellence in Every Bite' },
+    { service: 'HOUSEKEEPING', slogan: 'Spotless Spaces, Seamless Service' },
+    { service: 'MANPOWER', slogan: 'Skilled Professionals, Delivered' }
+  ];
 
   const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -18,6 +25,14 @@ function App() {
     { label: 'Global', targetImage: 11 },
     { label: 'Contact', targetImage: 16 }
   ];
+
+  useEffect(() => {
+    const sloganInterval = setInterval(() => {
+      setCurrentSloganIndex((prev) => (prev + 1) % slogans.length);
+    }, 2500);
+
+    return () => clearInterval(sloganInterval);
+  }, []);
 
   useEffect(() => {
     const imagePromises = Array.from({ length: 18 }, (_, i) => {
@@ -138,10 +153,31 @@ function App() {
             />
           </div>
         </div>
-        <p className="mt-8 text-[#BC9060] text-lg md:text-xl font-medium tracking-wide">
+
+        <div className="mt-12 h-20 flex items-center justify-center overflow-hidden">
+          {slogans.map((item, index) => (
+            <div
+              key={index}
+              className="absolute transition-all duration-700 ease-in-out text-center px-8"
+              style={{
+                opacity: currentSloganIndex === index ? 1 : 0,
+                transform: currentSloganIndex === index ? 'translateY(0)' : 'translateY(20px)'
+              }}
+            >
+              <p className="text-[#BC9060] text-sm md:text-base font-bold tracking-[0.2em] mb-2">
+                {item.service}
+              </p>
+              <p className="text-white text-lg md:text-2xl font-light tracking-wide">
+                {item.slogan}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <p className="mt-8 text-[#BC9060] text-base md:text-lg font-medium tracking-wide">
           Loading... {Math.round(loadingProgress)}%
         </p>
-        <div className="mt-4 w-64 h-1 bg-[#0D2343]/50 rounded-full overflow-hidden">
+        <div className="mt-3 w-64 h-1 bg-[#0D2343]/50 rounded-full overflow-hidden">
           <div
             className="h-full bg-[#BC9060] transition-all duration-300 rounded-full"
             style={{ width: `${loadingProgress}%` }}
