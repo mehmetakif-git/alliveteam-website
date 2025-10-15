@@ -3,6 +3,8 @@ import { Menu, X, ChevronUp } from 'lucide-react';
 
 function App() {
   const [scrolled, setScrolled] = useState(false);
+  const [navbarVisible, setNavbarVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
   const [visibleImages, setVisibleImages] = useState<Set<number>>(new Set());
@@ -65,13 +67,25 @@ function App() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-      setShowScrollTop(window.scrollY > 400);
+      const currentScrollY = window.scrollY;
+
+      setScrolled(currentScrollY > 50);
+      setShowScrollTop(currentScrollY > 400);
+
+      if (currentScrollY < 100) {
+        setNavbarVisible(true);
+      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setNavbarVisible(false);
+      } else if (currentScrollY < lastScrollY) {
+        setNavbarVisible(true);
+      }
+
+      setLastScrollY(currentScrollY);
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [lastScrollY]);
 
   useEffect(() => {
     const lazyObserver = new IntersectionObserver(
@@ -180,34 +194,34 @@ function App() {
       </div>
 
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out ${
-          scrolled ? 'bg-[#0D2343] shadow-lg' : 'bg-[#0D2343]/95'
+        className={`fixed left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ease-out ${
+          navbarVisible ? 'top-6' : '-top-32'
         }`}
-        style={{
-          padding: scrolled ? '0.75rem 0' : '1rem 0'
-        }}
       >
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+        <div
+          className={`flex items-center gap-2 px-6 py-3 rounded-full border shadow-lg backdrop-blur-md transition-all duration-300 ${
+            scrolled
+              ? 'bg-white/95 border-gray-200 shadow-xl'
+              : 'bg-white/90 border-white/20 shadow-md'
+          }`}
+        >
           <img
-            src="/assets/logo.png"
+            src="/assets/logo.svg"
             alt="Allive Logo"
-            className="transition-all duration-500 hover:opacity-80 cursor-pointer"
+            className="transition-all duration-300 hover:opacity-80 cursor-pointer"
             style={{
-              height: scrolled ? '35px' : '45px',
+              height: scrolled ? '32px' : '40px',
               width: 'auto'
             }}
             onClick={scrollToTop}
           />
 
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-1 ml-4">
             {navItems.map((item) => (
               <button
                 key={item.label}
                 onClick={() => scrollToImage(item.targetImage)}
-                className="text-white hover:text-[#BC9060] transition-all duration-300 font-medium"
-                style={{
-                  fontSize: scrolled ? '0.875rem' : '1rem'
-                }}
+                className="px-4 py-2 text-[#0D2343] hover:text-[#BC9060] hover:bg-[#BC9060]/10 rounded-full transition-all duration-300 font-medium text-sm"
               >
                 {item.label}
               </button>
@@ -215,29 +229,44 @@ function App() {
           </div>
 
           <button
-            className="md:hidden text-white transition-all duration-300"
+            className="ml-4 hidden md:block px-5 py-2 bg-[#BC9060] text-white rounded-full hover:bg-[#a67d4f] transition-all duration-300 font-medium text-sm shadow-md hover:shadow-lg"
+            onClick={() => scrollToImage(16)}
+          >
+            Get Quote
+          </button>
+
+          <button
+            className="md:hidden ml-4 text-[#0D2343] transition-all duration-300"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
-            {mobileMenuOpen ? (
-              <X size={scrolled ? 20 : 24} />
-            ) : (
-              <Menu size={scrolled ? 20 : 24} />
-            )}
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
 
         {mobileMenuOpen && (
-          <div className="md:hidden bg-[#0D2343] border-t border-white/10">
-            <div className="flex flex-col py-4">
+          <div className="md:hidden absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-md rounded-2xl border border-gray-200 shadow-xl overflow-hidden">
+            <div className="flex flex-col py-2">
               {navItems.map((item) => (
                 <button
                   key={item.label}
-                  onClick={() => scrollToImage(item.targetImage)}
-                  className="text-white hover:text-[#BC9060] transition-colors duration-300 font-medium py-3 px-6 text-left"
+                  onClick={() => {
+                    scrollToImage(item.targetImage);
+                    setMobileMenuOpen(false);
+                  }}
+                  className="text-[#0D2343] hover:text-[#BC9060] hover:bg-[#BC9060]/10 transition-all duration-300 font-medium py-3 px-6 text-left"
                 >
                   {item.label}
                 </button>
               ))}
+              <button
+                onClick={() => {
+                  scrollToImage(16);
+                  setMobileMenuOpen(false);
+                }}
+                className="mx-4 my-2 px-5 py-2 bg-[#BC9060] text-white rounded-full hover:bg-[#a67d4f] transition-all duration-300 font-medium text-sm text-center"
+              >
+                Get Quote
+              </button>
             </div>
           </div>
         )}
