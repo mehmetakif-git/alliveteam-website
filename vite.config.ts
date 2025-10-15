@@ -1,9 +1,34 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { copyFileSync, mkdirSync, existsSync } from 'fs';
+import { resolve } from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    {
+      name: 'copy-assets',
+      closeBundle() {
+        const assetsDir = resolve(__dirname, 'assets');
+        const distAssetsDir = resolve(__dirname, 'dist/assets');
+
+        if (!existsSync(distAssetsDir)) {
+          mkdirSync(distAssetsDir, { recursive: true });
+        }
+
+        for (let i = 1; i <= 18; i++) {
+          const src = resolve(assetsDir, `image${i}.jpg`);
+          const dest = resolve(distAssetsDir, `image${i}.jpg`);
+          try {
+            copyFileSync(src, dest);
+          } catch (err) {
+            console.warn(`Warning: Could not copy ${src}`);
+          }
+        }
+      }
+    }
+  ],
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
