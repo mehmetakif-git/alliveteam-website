@@ -19,6 +19,8 @@ function App() {
   const [activeSection, setActiveSection] = useState<Section>('about');
   const [activeServiceTab, setActiveServiceTab] = useState<ServiceTab>('catering');
   const [showFooter, setShowFooter] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [contentVisible, setContentVisible] = useState(true);
 
   const slogans = [
     { service: 'CATERING', slogan: 'Excellence in Every Bite' },
@@ -163,10 +165,22 @@ function App() {
   };
 
   const navigateToSection = (section: Section) => {
-    setActiveSection(section);
-    window.location.hash = section;
-    scrollToTop();
+    if (section === activeSection) return;
+
+    setIsTransitioning(true);
+    setContentVisible(false);
     setMobileMenuOpen(false);
+
+    setTimeout(() => {
+      setActiveSection(section);
+      window.location.hash = section;
+      window.scrollTo({ top: 0, behavior: 'auto' });
+
+      setTimeout(() => {
+        setContentVisible(true);
+        setIsTransitioning(false);
+      }, 50);
+    }, 300);
   };
 
   const getCurrentImages = () => {
@@ -404,7 +418,19 @@ function App() {
         </div>
       )}
 
-      <div style={{ display: 'block', margin: 0, padding: 0, lineHeight: 0, fontSize: 0 }}>
+      <div
+        className="transition-opacity duration-500 ease-in-out"
+        style={{
+          display: 'block',
+          margin: 0,
+          padding: 0,
+          lineHeight: 0,
+          fontSize: 0,
+          opacity: contentVisible ? 1 : 0,
+          transform: contentVisible ? 'translateY(0)' : 'translateY(20px)',
+          transition: 'opacity 500ms ease-in-out, transform 500ms ease-in-out'
+        }}
+      >
         {getCurrentImages().map((imageNum, index) => (
           <div
             key={`${activeSection}-${activeServiceTab}-${imageNum}`}
