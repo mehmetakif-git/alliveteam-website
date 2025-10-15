@@ -7,6 +7,8 @@ function App() {
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
   const [visibleImages, setVisibleImages] = useState<Set<number>>(new Set());
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [preloaderVisible, setPreloaderVisible] = useState(true);
+  const [loadingProgress, setLoadingProgress] = useState(0);
 
   const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -16,6 +18,35 @@ function App() {
     { label: 'Global', targetImage: 11 },
     { label: 'Contact', targetImage: 16 }
   ];
+
+  useEffect(() => {
+    const imagePromises = Array.from({ length: 18 }, (_, i) => {
+      return new Promise<void>((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          setLoadingProgress((prev) => {
+            const newProgress = prev + (100 / 18);
+            return newProgress > 100 ? 100 : newProgress;
+          });
+          resolve();
+        };
+        img.onerror = () => resolve();
+        img.src = `/assets/image${i + 1}.jpg`;
+      });
+    });
+
+    Promise.all(imagePromises).then(() => {
+      setTimeout(() => {
+        setPreloaderVisible(false);
+      }, 300);
+    });
+
+    const fallbackTimer = setTimeout(() => {
+      setPreloaderVisible(false);
+    }, 10000);
+
+    return () => clearTimeout(fallbackTimer);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -85,6 +116,39 @@ function App() {
 
   return (
     <div className="bg-white">
+      <div
+        className={`fixed inset-0 z-[100] bg-gradient-to-br from-[#0D2343] to-[#1a3a5f] flex flex-col items-center justify-center transition-opacity duration-[1500ms] ${
+          preloaderVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+      >
+        <div className="relative">
+          <img
+            src="/assets/logo.png"
+            alt="Loading"
+            className="w-32 h-32 md:w-40 md:h-40 animate-[spin_3s_ease-in-out_infinite]"
+            style={{
+              filter: 'drop-shadow(0 0 20px rgba(188, 144, 96, 0.5))'
+            }}
+          />
+          <div className="absolute inset-0 animate-[pulse_2s_ease-in-out_infinite]">
+            <img
+              src="/assets/logo.png"
+              alt=""
+              className="w-32 h-32 md:w-40 md:h-40 opacity-30"
+            />
+          </div>
+        </div>
+        <p className="mt-8 text-[#BC9060] text-lg md:text-xl font-medium tracking-wide">
+          Loading... {Math.round(loadingProgress)}%
+        </p>
+        <div className="mt-4 w-64 h-1 bg-[#0D2343]/50 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-[#BC9060] transition-all duration-300 rounded-full"
+            style={{ width: `${loadingProgress}%` }}
+          />
+        </div>
+      </div>
+
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out ${
           scrolled ? 'bg-[#0D2343] shadow-lg' : 'bg-[#0D2343]/95'
@@ -95,7 +159,7 @@ function App() {
       >
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           <img
-            src="/assets/logo.svg"
+            src="/assets/logo.png"
             alt="Allive Logo"
             className="transition-all duration-500 hover:opacity-80 cursor-pointer"
             style={{
