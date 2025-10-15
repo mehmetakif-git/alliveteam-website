@@ -266,7 +266,7 @@ function App() {
         )}
       </nav>
 
-      <div>
+      <div style={{ display: 'block', margin: 0, padding: 0, lineHeight: 0, fontSize: 0 }}>
         {Array.from({ length: 18 }, (_, i) => i + 1).map((imageNum) => (
           <div
             key={imageNum}
@@ -274,9 +274,11 @@ function App() {
             data-image-index={imageNum}
             className="w-full relative overflow-hidden"
             style={{
-              minHeight: '400px',
+              margin: 0,
+              padding: 0,
               lineHeight: 0,
-              fontSize: 0
+              fontSize: 0,
+              display: 'block'
             }}
           >
             {loadedImages.has(imageNum) ? (
@@ -291,7 +293,10 @@ function App() {
                   verticalAlign: 'top',
                   lineHeight: 0,
                   margin: 0,
-                  padding: 0
+                  padding: 0,
+                  width: '100%',
+                  height: 'auto',
+                  maxWidth: '100%'
                 }}
                 loading="lazy"
               />
