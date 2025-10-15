@@ -196,6 +196,8 @@ function App() {
       <nav
         className={`fixed left-1/2 -translate-x-1/2 z-50 transition-all ease-out ${
           navbarVisible ? (scrolled ? 'top-5' : 'top-0') : '-top-32'
+        } ${
+          scrolled ? 'navbar-scrolled' : 'navbar-top'
         }`}
         style={{
           width: scrolled ? 'min(50%, 900px)' : '100%',

@@ -68,7 +68,11 @@ img {
 }
 
 @media (max-width: 768px) {
-  nav {
+  nav.navbar-top {
+    width: 100% !important;
+  }
+
+  nav.navbar-scrolled {
     width: 90% !important;
   }
 }
