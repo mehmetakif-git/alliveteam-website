@@ -18,3 +18,26 @@ body {
   padding: 0;
   overflow-x: hidden;
 }
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0D2343;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #BC9060;
+  border-radius: 6px;
+  border: 2px solid #0D2343;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a67d4d;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #BC9060 #0D2343;
+}
