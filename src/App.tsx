@@ -155,7 +155,9 @@ function App() {
             data-image-index={imageNum}
             className="w-full relative overflow-hidden"
             style={{
-              minHeight: '400px'
+              minHeight: '400px',
+              lineHeight: 0,
+              fontSize: 0
             }}
           >
             {loadedImages.has(imageNum) ? (
@@ -165,7 +167,12 @@ function App() {
                 className="w-full h-auto object-cover transition-all duration-700 ease-out"
                 style={{
                   opacity: visibleImages.has(imageNum) ? 1 : 0,
-                  transform: visibleImages.has(imageNum) ? 'translateY(0)' : 'translateY(40px)'
+                  transform: visibleImages.has(imageNum) ? 'translateY(0)' : 'translateY(40px)',
+                  display: 'block',
+                  verticalAlign: 'top',
+                  lineHeight: 0,
+                  margin: 0,
+                  padding: 0
                 }}
                 loading="lazy"
               />
