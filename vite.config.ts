@@ -26,6 +26,17 @@ export default defineConfig({
             console.warn(`Warning: Could not copy ${src}`);
           }
         }
+
+        const logoFiles = ['logo.png', 'logo.svg'];
+        logoFiles.forEach((file) => {
+          const src = resolve(assetsDir, file);
+          const dest = resolve(distAssetsDir, file);
+          try {
+            copyFileSync(src, dest);
+          } catch (err) {
+            console.warn(`Warning: Could not copy ${src}`);
+          }
+        });
       }
     }
   ],
