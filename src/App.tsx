@@ -140,18 +140,11 @@ function App() {
           <img
             src="/assets/logo.png"
             alt="Loading"
-            className="w-32 h-32 md:w-40 md:h-40 animate-[spin_3s_ease-in-out_infinite]"
+            className="w-32 h-32 md:w-40 md:h-40 animate-[pulse_2s_ease-in-out_infinite]"
             style={{
-              filter: 'drop-shadow(0 0 20px rgba(188, 144, 96, 0.5))'
+              filter: 'drop-shadow(0 0 20px rgba(188, 144, 96, 0.3))'
             }}
           />
-          <div className="absolute inset-0 animate-[pulse_2s_ease-in-out_infinite]">
-            <img
-              src="/assets/logo.png"
-              alt=""
-              className="w-32 h-32 md:w-40 md:h-40 opacity-30"
-            />
-          </div>
         </div>
 
         <div className="mt-12 h-20 flex items-center justify-center overflow-hidden">
