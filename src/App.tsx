@@ -94,14 +94,16 @@ function App() {
         }}
       >
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-          <div
-            className="text-[#BC9060] font-bold tracking-wider transition-all duration-500"
+          <img
+            src="/assets/logo.svg"
+            alt="Allive Logo"
+            className="transition-all duration-500 hover:opacity-80 cursor-pointer"
             style={{
-              fontSize: scrolled ? '1.25rem' : '1.5rem'
+              height: scrolled ? '35px' : '45px',
+              width: 'auto'
             }}
-          >
-            ALLIVE
-          </div>
+            onClick={scrollToTop}
+          />
 
           <div className="hidden md:flex items-center gap-8">
             {navItems.map((item) => (
