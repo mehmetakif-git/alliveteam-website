@@ -2,9 +2,10 @@ import { Mail, Phone } from 'lucide-react';
 
 interface FooterProps {
   visible: boolean;
+  setIsHoveringFooter: (hovering: boolean) => void;
 }
 
-function Footer({ visible }: FooterProps) {
+function Footer({ visible, setIsHoveringFooter }: FooterProps) {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -15,12 +16,14 @@ function Footer({ visible }: FooterProps) {
       style={{
         opacity: visible ? 1 : 0,
         visibility: visible ? 'visible' : 'hidden',
-        transform: visible ? 'translateY(0)' : 'translateY(20px)',
+        transform: visible ? 'translateY(0)' : 'translateY(100%)',
         transition: visible
           ? 'opacity 300ms ease-in-out, transform 300ms ease-in-out, visibility 300ms'
           : 'opacity 200ms ease-in-out, transform 200ms ease-in-out, visibility 200ms',
         pointerEvents: visible ? 'auto' : 'none'
       }}
+      onMouseEnter={() => setIsHoveringFooter(true)}
+      onMouseLeave={() => setIsHoveringFooter(false)}
     >
       <div
         className="w-full px-6 py-4"
