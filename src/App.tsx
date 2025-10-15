@@ -302,16 +302,18 @@ function App() {
             <a
               href="mailto:welcome@alliveteam.com"
               className="flex items-center gap-2 hover:text-[#BC9060] transition-all duration-300"
+              title="welcome@alliveteam.com"
             >
               <Mail size={18} />
-              <span className="hidden lg:block">welcome@alliveteam.com</span>
+              <span className={scrolled ? 'hidden' : 'block'}>welcome@alliveteam.com</span>
             </a>
             <a
               href="tel:+966583263520"
               className="flex items-center gap-2 hover:text-[#BC9060] transition-all duration-300"
+              title="+966 58 326 3520"
             >
               <Phone size={18} />
-              <span className="hidden lg:block">+966 58 326 3520</span>
+              <span className={scrolled ? 'hidden' : 'block'}>+966 58 326 3520</span>
             </a>
           </div>
 
