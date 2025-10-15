@@ -165,9 +165,14 @@ function App() {
       resetIdleTimer();
     };
 
+    const handleTouchMove = () => {
+      resetIdleTimer();
+    };
+
     window.addEventListener('scroll', handleScroll);
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('touchstart', handleTouchStart);
+    window.addEventListener('touchmove', handleTouchMove);
 
     resetIdleTimer();
 
@@ -175,11 +180,21 @@ function App() {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
       if (idleTimerRef.current) {
         clearTimeout(idleTimerRef.current);
       }
     };
   }, [lastScrollY, isIdle, isHoveringNav, isHoveringFooter]);
+
+  useEffect(() => {
+    if (isHoveringNav || isHoveringFooter) {
+      if (idleTimerRef.current) {
+        clearTimeout(idleTimerRef.current);
+      }
+      setIsIdle(false);
+    }
+  }, [isHoveringNav, isHoveringFooter]);
 
   useEffect(() => {
     const lazyObserver = new IntersectionObserver(
@@ -314,16 +329,17 @@ function App() {
       </div>
 
       <nav
-        className={`fixed left-1/2 -translate-x-1/2 z-50 transition-all ${
-          navbarVisible && !isIdle ? (scrolled ? 'top-5' : 'top-0') : '-top-32'
-        } ${
+        className={`fixed left-1/2 -translate-x-1/2 z-50 ${
           scrolled ? 'navbar-scrolled' : 'navbar-top'
         }`}
         style={{
           width: scrolled ? 'min(50%, 900px)' : '100%',
+          top: navbarVisible && !isIdle ? (scrolled ? '20px' : '0') : '-120px',
           opacity: navbarVisible && !isIdle ? 1 : 0,
-          transitionDuration: isIdle ? '400ms' : '500ms',
-          transitionTimingFunction: isIdle ? 'ease-out' : 'cubic-bezier(0.34, 1.56, 0.64, 1)'
+          transform: navbarVisible && !isIdle
+            ? 'translateX(-50%) translateY(0)'
+            : 'translateX(-50%) translateY(-20px)',
+          transition: 'all 400ms cubic-bezier(0.4, 0, 0.2, 1)'
         }}
         onMouseEnter={() => setIsHoveringNav(true)}
         onMouseLeave={() => setIsHoveringNav(false)}
