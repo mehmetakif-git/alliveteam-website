@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Menu, X, ChevronUp } from 'lucide-react';
+import Footer from './Footer';
+
+type Section = 'about' | 'services' | 'contact';
+type ServiceTab = 'catering' | 'manpower';
 
 function App() {
   const [scrolled, setScrolled] = useState(false);
@@ -12,6 +16,8 @@ function App() {
   const [preloaderVisible, setPreloaderVisible] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [currentSloganIndex, setCurrentSloganIndex] = useState(0);
+  const [activeSection, setActiveSection] = useState<Section>('about');
+  const [activeServiceTab, setActiveServiceTab] = useState<ServiceTab>('catering');
 
   const slogans = [
     { service: 'CATERING', slogan: 'Excellence in Every Bite' },
@@ -21,12 +27,21 @@ function App() {
 
   const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const navItems = [
-    { label: 'About', targetImage: 1 },
-    { label: 'Services', targetImage: 6 },
-    { label: 'Global', targetImage: 11 },
-    { label: 'Contact', targetImage: 16 }
-  ];
+  const sectionImages = {
+    about: [1, 2, 3, 4],
+    services: {
+      catering: [5, 6, 7, 8, 9],
+      manpower: [10, 11, 12, 13]
+    },
+    contact: [16, 17]
+  };
+
+  useEffect(() => {
+    const hash = window.location.hash.slice(1) as Section;
+    if (hash && ['about', 'services', 'contact'].includes(hash)) {
+      setActiveSection(hash);
+    }
+  }, []);
 
   useEffect(() => {
     const sloganInterval = setInterval(() => {
@@ -37,18 +52,25 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const imagePromises = Array.from({ length: 18 }, (_, i) => {
+    const allImages = [
+      ...sectionImages.about,
+      ...sectionImages.services.catering,
+      ...sectionImages.services.manpower,
+      ...sectionImages.contact
+    ];
+
+    const imagePromises = allImages.map((imageNum) => {
       return new Promise<void>((resolve) => {
         const img = new Image();
         img.onload = () => {
           setLoadingProgress((prev) => {
-            const newProgress = prev + (100 / 18);
+            const newProgress = prev + (100 / allImages.length);
             return newProgress > 100 ? 100 : newProgress;
           });
           resolve();
         };
         img.onerror = () => resolve();
-        img.src = `/assets/image${i + 1}.jpg`;
+        img.src = `/assets/image${imageNum}.jpg`;
       });
     });
 
@@ -129,18 +151,28 @@ function App() {
       lazyObserver.disconnect();
       revealObserver.disconnect();
     };
-  }, []);
-
-  const scrollToImage = (imageNumber: number) => {
-    const targetRef = imageRefs.current[imageNumber - 1];
-    if (targetRef) {
-      targetRef.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setMobileMenuOpen(false);
-    }
-  };
+  }, [activeSection, activeServiceTab]);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const navigateToSection = (section: Section) => {
+    setActiveSection(section);
+    window.location.hash = section;
+    scrollToTop();
+    setMobileMenuOpen(false);
+  };
+
+  const getCurrentImages = () => {
+    if (activeSection === 'about') {
+      return sectionImages.about;
+    } else if (activeSection === 'services') {
+      return sectionImages.services[activeServiceTab];
+    } else if (activeSection === 'contact') {
+      return sectionImages.contact;
+    }
+    return [];
   };
 
   return (
@@ -229,20 +261,41 @@ function App() {
           />
 
           <div className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
-            {navItems.map((item) => (
-              <button
-                key={item.label}
-                onClick={() => scrollToImage(item.targetImage)}
-                className="px-4 py-2 text-white hover:text-[#0D2343] hover:bg-white rounded-full transition-all duration-300 font-medium text-sm"
-              >
-                {item.label}
-              </button>
-            ))}
+            <button
+              onClick={() => navigateToSection('about')}
+              className={`px-4 py-2 rounded-full transition-all duration-300 font-medium text-sm ${
+                activeSection === 'about'
+                  ? 'bg-white text-[#0D2343]'
+                  : 'text-white hover:text-[#0D2343] hover:bg-white'
+              }`}
+            >
+              About
+            </button>
+            <button
+              onClick={() => navigateToSection('services')}
+              className={`px-4 py-2 rounded-full transition-all duration-300 font-medium text-sm ${
+                activeSection === 'services'
+                  ? 'bg-white text-[#0D2343]'
+                  : 'text-white hover:text-[#0D2343] hover:bg-white'
+              }`}
+            >
+              Services
+            </button>
+            <button
+              onClick={() => navigateToSection('contact')}
+              className={`px-4 py-2 rounded-full transition-all duration-300 font-medium text-sm ${
+                activeSection === 'contact'
+                  ? 'bg-white text-[#0D2343]'
+                  : 'text-white hover:text-[#0D2343] hover:bg-white'
+              }`}
+            >
+              Contact
+            </button>
           </div>
 
           <button
             className="hidden md:block px-5 py-2 bg-white text-[#0D2343] rounded-full hover:bg-[#0D2343] hover:text-white hover:ring-2 hover:ring-white transition-all duration-300 font-medium text-sm shadow-md hover:shadow-lg flex-shrink-0"
-            onClick={() => scrollToImage(16)}
+            onClick={() => navigateToSection('contact')}
           >
             Get Quote
           </button>
@@ -258,23 +311,38 @@ function App() {
         {mobileMenuOpen && (
           <div className="md:hidden absolute top-full left-0 right-0 mt-2 bg-[#0D2343]/95 backdrop-blur-md rounded-2xl border border-[#0D2343]/30 shadow-xl overflow-hidden">
             <div className="flex flex-col py-2">
-              {navItems.map((item) => (
-                <button
-                  key={item.label}
-                  onClick={() => {
-                    scrollToImage(item.targetImage);
-                    setMobileMenuOpen(false);
-                  }}
-                  className="text-white hover:text-[#0D2343] hover:bg-white transition-all duration-300 font-medium py-3 px-6 text-left"
-                >
-                  {item.label}
-                </button>
-              ))}
               <button
-                onClick={() => {
-                  scrollToImage(16);
-                  setMobileMenuOpen(false);
-                }}
+                onClick={() => navigateToSection('about')}
+                className={`font-medium py-3 px-6 text-left transition-all duration-300 ${
+                  activeSection === 'about'
+                    ? 'bg-white text-[#0D2343]'
+                    : 'text-white hover:text-[#0D2343] hover:bg-white'
+                }`}
+              >
+                About
+              </button>
+              <button
+                onClick={() => navigateToSection('services')}
+                className={`font-medium py-3 px-6 text-left transition-all duration-300 ${
+                  activeSection === 'services'
+                    ? 'bg-white text-[#0D2343]'
+                    : 'text-white hover:text-[#0D2343] hover:bg-white'
+                }`}
+              >
+                Services
+              </button>
+              <button
+                onClick={() => navigateToSection('contact')}
+                className={`font-medium py-3 px-6 text-left transition-all duration-300 ${
+                  activeSection === 'contact'
+                    ? 'bg-white text-[#0D2343]'
+                    : 'text-white hover:text-[#0D2343] hover:bg-white'
+                }`}
+              >
+                Contact
+              </button>
+              <button
+                onClick={() => navigateToSection('contact')}
                 className="mx-4 my-2 px-5 py-2 bg-white text-[#0D2343] rounded-full hover:bg-[#0D2343] hover:text-white hover:ring-2 hover:ring-white transition-all duration-300 font-medium text-sm text-center"
               >
                 Get Quote
@@ -284,11 +352,36 @@ function App() {
         )}
       </nav>
 
+      {activeSection === 'services' && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 flex gap-2 bg-[#0D2343]/90 backdrop-blur-md px-4 py-2 rounded-full border border-[#0D2343]/30 shadow-lg">
+          <button
+            onClick={() => setActiveServiceTab('catering')}
+            className={`px-4 py-2 rounded-full transition-all duration-300 font-medium text-sm ${
+              activeServiceTab === 'catering'
+                ? 'bg-white text-[#0D2343]'
+                : 'text-white hover:bg-white hover:text-[#0D2343]'
+            }`}
+          >
+            Catering
+          </button>
+          <button
+            onClick={() => setActiveServiceTab('manpower')}
+            className={`px-4 py-2 rounded-full transition-all duration-300 font-medium text-sm ${
+              activeServiceTab === 'manpower'
+                ? 'bg-white text-[#0D2343]'
+                : 'text-white hover:bg-white hover:text-[#0D2343]'
+            }`}
+          >
+            Manpower
+          </button>
+        </div>
+      )}
+
       <div style={{ display: 'block', margin: 0, padding: 0, lineHeight: 0, fontSize: 0 }}>
-        {Array.from({ length: 18 }, (_, i) => i + 1).map((imageNum) => (
+        {getCurrentImages().map((imageNum, index) => (
           <div
-            key={imageNum}
-            ref={(el) => (imageRefs.current[imageNum - 1] = el)}
+            key={`${activeSection}-${activeServiceTab}-${imageNum}`}
+            ref={(el) => (imageRefs.current[index] = el)}
             data-image-index={imageNum}
             className="w-full relative overflow-hidden"
             style={{
@@ -324,6 +417,8 @@ function App() {
           </div>
         ))}
       </div>
+
+      <Footer />
 
       <button
         onClick={scrollToTop}
