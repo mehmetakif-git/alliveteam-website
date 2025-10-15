@@ -198,13 +198,7 @@ function App() {
           navbarVisible ? 'top-6' : '-top-32'
         }`}
       >
-        <div
-          className={`flex items-center gap-2 px-6 py-3 rounded-full border shadow-lg backdrop-blur-md transition-all duration-300 ${
-            scrolled
-              ? 'bg-white/95 border-gray-200 shadow-xl'
-              : 'bg-white/90 border-white/20 shadow-md'
-          }`}
-        >
+        <div className="flex items-center gap-2 px-6 py-3 rounded-full border border-[#0D2343]/20 shadow-lg backdrop-blur-md transition-all duration-300 bg-[#0D2343]/90">
           <img
             src="/assets/logo.svg"
             alt="Allive Logo"
@@ -221,7 +215,7 @@ function App() {
               <button
                 key={item.label}
                 onClick={() => scrollToImage(item.targetImage)}
-                className="px-4 py-2 text-[#0D2343] hover:text-[#BC9060] hover:bg-[#BC9060]/10 rounded-full transition-all duration-300 font-medium text-sm"
+                className="px-4 py-2 text-white hover:text-[#0D2343] hover:bg-white rounded-full transition-all duration-300 font-medium text-sm"
               >
                 {item.label}
               </button>
@@ -229,14 +223,14 @@ function App() {
           </div>
 
           <button
-            className="ml-4 hidden md:block px-5 py-2 bg-[#BC9060] text-white rounded-full hover:bg-[#a67d4f] transition-all duration-300 font-medium text-sm shadow-md hover:shadow-lg"
+            className="ml-4 hidden md:block px-5 py-2 bg-white text-[#0D2343] rounded-full hover:bg-[#0D2343] hover:text-white hover:ring-2 hover:ring-white transition-all duration-300 font-medium text-sm shadow-md hover:shadow-lg"
             onClick={() => scrollToImage(16)}
           >
             Get Quote
           </button>
 
           <button
-            className="md:hidden ml-4 text-[#0D2343] transition-all duration-300"
+            className="md:hidden ml-4 text-white transition-all duration-300"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -244,7 +238,7 @@ function App() {
         </div>
 
         {mobileMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-md rounded-2xl border border-gray-200 shadow-xl overflow-hidden">
+          <div className="md:hidden absolute top-full left-0 right-0 mt-2 bg-[#0D2343]/95 backdrop-blur-md rounded-2xl border border-[#0D2343]/30 shadow-xl overflow-hidden">
             <div className="flex flex-col py-2">
               {navItems.map((item) => (
                 <button
@@ -253,7 +247,7 @@ function App() {
                     scrollToImage(item.targetImage);
                     setMobileMenuOpen(false);
                   }}
-                  className="text-[#0D2343] hover:text-[#BC9060] hover:bg-[#BC9060]/10 transition-all duration-300 font-medium py-3 px-6 text-left"
+                  className="text-white hover:text-[#0D2343] hover:bg-white transition-all duration-300 font-medium py-3 px-6 text-left"
                 >
                   {item.label}
                 </button>
@@ -263,7 +257,7 @@ function App() {
                   scrollToImage(16);
                   setMobileMenuOpen(false);
                 }}
-                className="mx-4 my-2 px-5 py-2 bg-[#BC9060] text-white rounded-full hover:bg-[#a67d4f] transition-all duration-300 font-medium text-sm text-center"
+                className="mx-4 my-2 px-5 py-2 bg-white text-[#0D2343] rounded-full hover:bg-[#0D2343] hover:text-white hover:ring-2 hover:ring-white transition-all duration-300 font-medium text-sm text-center"
               >
                 Get Quote
               </button>
