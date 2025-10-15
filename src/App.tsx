@@ -136,13 +136,14 @@ function App() {
           preloaderVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
       >
-        <div className="relative">
+        <div className="relative flex items-center justify-center">
           <img
-            src="/assets/logo.png"
+            src="/assets/logo.svg"
             alt="Loading"
-            className="w-32 h-32 md:w-40 md:h-40 animate-[pulse_2s_ease-in-out_infinite]"
+            className="h-20 md:h-24 w-auto animate-[pulse_2s_ease-in-out_infinite]"
             style={{
-              filter: 'drop-shadow(0 0 20px rgba(188, 144, 96, 0.3))'
+              filter: 'drop-shadow(0 0 20px rgba(188, 144, 96, 0.3))',
+              objectFit: 'contain'
             }}
           />
         </div>
