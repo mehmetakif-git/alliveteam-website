@@ -266,7 +266,7 @@ function App() {
         )}
       </nav>
 
-      <div className="pt-16">
+      <div>
         {Array.from({ length: 18 }, (_, i) => i + 1).map((imageNum) => (
           <div
             key={imageNum}
