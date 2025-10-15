@@ -21,6 +21,10 @@ function App() {
   const [showFooter, setShowFooter] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [contentVisible, setContentVisible] = useState(true);
+  const [isIdle, setIsIdle] = useState(false);
+  const [isHoveringNav, setIsHoveringNav] = useState(false);
+  const [isHoveringFooter, setIsHoveringFooter] = useState(false);
+  const idleTimerRef = useRef<number | null>(null);
 
   const slogans = [
     { service: 'CATERING', slogan: 'Excellence in Every Bite' },
@@ -29,6 +33,24 @@ function App() {
   ];
 
   const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+
+    window.scrollTo(0, 0);
+
+    const handleBeforeUnload = () => {
+      window.scrollTo(0, 0);
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
   const sectionImages = {
     about: [1, 2, 3, 4],
@@ -91,6 +113,22 @@ function App() {
   }, []);
 
   useEffect(() => {
+    const resetIdleTimer = () => {
+      if (idleTimerRef.current) {
+        clearTimeout(idleTimerRef.current);
+      }
+
+      if (isIdle) {
+        setIsIdle(false);
+      }
+
+      idleTimerRef.current = window.setTimeout(() => {
+        if (!isHoveringNav && !isHoveringFooter) {
+          setIsIdle(true);
+        }
+      }, 2500);
+    };
+
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       const windowHeight = window.innerHeight;
@@ -116,11 +154,47 @@ function App() {
       }
 
       setLastScrollY(currentScrollY);
+      resetIdleTimer();
+    };
+
+    const handleMouseMove = () => {
+      resetIdleTimer();
+    };
+
+    const handleTouchStart = () => {
+      resetIdleTimer();
+    };
+
+    const handleTouchMove = () => {
+      resetIdleTimer();
     };
 
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('touchstart', handleTouchStart);
+    window.addEventListener('touchmove', handleTouchMove);
+
+    resetIdleTimer();
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      if (idleTimerRef.current) {
+        clearTimeout(idleTimerRef.current);
+      }
+    };
+  }, [lastScrollY, isIdle, isHoveringNav, isHoveringFooter]);
+
+  useEffect(() => {
+    if (isHoveringNav || isHoveringFooter) {
+      if (idleTimerRef.current) {
+        clearTimeout(idleTimerRef.current);
+      }
+      setIsIdle(false);
+    }
+  }, [isHoveringNav, isHoveringFooter]);
 
   useEffect(() => {
     const lazyObserver = new IntersectionObserver(
@@ -168,6 +242,10 @@ function App() {
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleLogoClick = () => {
+    navigateToSection('about');
   };
 
   const navigateToSection = (section: Section) => {
@@ -251,16 +329,20 @@ function App() {
       </div>
 
       <nav
-        className={`fixed left-1/2 -translate-x-1/2 z-50 transition-all ease-out ${
-          navbarVisible ? (scrolled ? 'top-5' : 'top-0') : '-top-32'
-        } ${
+        className={`fixed left-1/2 -translate-x-1/2 z-50 ${
           scrolled ? 'navbar-scrolled' : 'navbar-top'
         }`}
         style={{
           width: scrolled ? 'min(50%, 900px)' : '100%',
-          transitionDuration: '500ms',
-          transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
+          top: navbarVisible && !isIdle ? (scrolled ? '20px' : '0') : '-120px',
+          opacity: navbarVisible && !isIdle ? 1 : 0,
+          transform: navbarVisible && !isIdle
+            ? 'translateX(-50%) translateY(0)'
+            : 'translateX(-50%) translateY(-20px)',
+          transition: 'all 400ms cubic-bezier(0.4, 0, 0.2, 1)'
         }}
+        onMouseEnter={() => setIsHoveringNav(true)}
+        onMouseLeave={() => setIsHoveringNav(false)}
       >
         <div
           className="flex items-center justify-between w-full px-6 py-3 border transition-all"
@@ -277,12 +359,12 @@ function App() {
           <img
             src="/assets/logo.svg"
             alt="Allive Logo"
-            className="transition-all duration-300 hover:opacity-80 cursor-pointer flex-shrink-0"
+            className="transition-all duration-300 hover:scale-105 hover:opacity-80 cursor-pointer flex-shrink-0"
             style={{
               height: scrolled ? '32px' : '40px',
               width: 'auto'
             }}
-            onClick={scrollToTop}
+            onClick={handleLogoClick}
           />
 
           <div className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
@@ -477,7 +559,6 @@ function App() {
         ))}
       </div>
 
-      <Footer visible={showFooter} />
 
       <button
         onClick={scrollToTop}
@@ -491,6 +572,8 @@ function App() {
       >
         <ChevronUp size={24} />
       </button>
+
+      <Footer visible={showFooter && !isIdle} setIsHoveringFooter={setIsHoveringFooter} navigateToSection={navigateToSection} />
     </div>
   );
 }
