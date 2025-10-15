@@ -11,10 +11,14 @@ function Footer({ visible }: FooterProps) {
 
   return (
     <footer
-      className="fixed bottom-0 left-0 right-0 z-40 transition-all duration-500"
+      className="fixed bottom-0 left-0 right-0 z-40"
       style={{
         opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : 'translateY(100%)',
+        visibility: visible ? 'visible' : 'hidden',
+        transform: visible ? 'translateY(0)' : 'translateY(20px)',
+        transition: visible
+          ? 'opacity 300ms ease-in-out, transform 300ms ease-in-out, visibility 300ms'
+          : 'opacity 200ms ease-in-out, transform 200ms ease-in-out, visibility 200ms',
         pointerEvents: visible ? 'auto' : 'none'
       }}
     >

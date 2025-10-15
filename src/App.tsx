@@ -95,11 +95,17 @@ function App() {
       const currentScrollY = window.scrollY;
       const windowHeight = window.innerHeight;
       const documentHeight = document.documentElement.scrollHeight;
-      const scrollPercentage = (currentScrollY + windowHeight) / documentHeight;
+      const scrolledToBottom = (currentScrollY + windowHeight) >= (documentHeight - 100);
+      const isScrollingUp = currentScrollY < lastScrollY;
 
       setScrolled(currentScrollY > 100);
       setShowScrollTop(currentScrollY > 400);
-      setShowFooter(scrollPercentage > 0.8);
+
+      if (scrolledToBottom && !isScrollingUp) {
+        setShowFooter(true);
+      } else {
+        setShowFooter(false);
+      }
 
       if (currentScrollY < 100) {
         setNavbarVisible(true);
