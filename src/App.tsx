@@ -95,13 +95,15 @@ function App() {
       const currentScrollY = window.scrollY;
       const windowHeight = window.innerHeight;
       const documentHeight = document.documentElement.scrollHeight;
-      const scrolledToBottom = (currentScrollY + windowHeight) >= (documentHeight - 100);
+      const scrolledToBottom = (currentScrollY + windowHeight) >= (documentHeight - 300);
+      const isNearBottom = currentScrollY >= (documentHeight - windowHeight) * 0.7;
       const isScrollingUp = currentScrollY < lastScrollY;
+      const isMobile = window.innerWidth < 768;
 
       setScrolled(currentScrollY > 100);
       setShowScrollTop(currentScrollY > 400);
 
-      if (scrolledToBottom && !isScrollingUp) {
+      if ((scrolledToBottom || isNearBottom || (activeSection === 'contact' && isMobile)) && !isScrollingUp) {
         setShowFooter(true);
       } else {
         setShowFooter(false);
@@ -120,7 +122,7 @@ function App() {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+  }, [lastScrollY, activeSection]);
 
   useEffect(() => {
     const lazyObserver = new IntersectionObserver(
@@ -425,7 +427,9 @@ function App() {
       )}
 
       <div
-        className="transition-opacity duration-500 ease-in-out"
+        className={`transition-opacity duration-500 ease-in-out ${
+          activeSection === 'contact' ? 'contact-section' : ''
+        }`}
         style={{
           display: 'block',
           margin: 0,

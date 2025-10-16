@@ -67,6 +67,10 @@ img {
   scrollbar-color: #BC9060 #0D2343;
 }
 
+.contact-section {
+  min-height: 100vh;
+}
+
 @media (max-width: 768px) {
   nav.navbar-top {
     width: 100% !important;
@@ -74,5 +78,9 @@ img {
 
   nav.navbar-scrolled {
     width: 90% !important;
+  }
+
+  .contact-section {
+    min-height: 120vh;
   }
 }
