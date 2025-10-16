@@ -475,6 +475,35 @@ function App() {
             )}
           </div>
         ))}
+        {activeSection === 'contact' && (
+          <div
+            className="w-full relative overflow-hidden block md:hidden"
+            style={{
+              margin: 0,
+              padding: 0,
+              lineHeight: 0,
+              fontSize: 0,
+              display: 'block'
+            }}
+          >
+            <img
+              src="/assets/image18.jpg"
+              alt="Contact 3"
+              className="w-full h-auto object-cover"
+              style={{
+                display: 'block',
+                verticalAlign: 'top',
+                lineHeight: 0,
+                margin: 0,
+                padding: 0,
+                width: '100%',
+                height: 'auto',
+                maxWidth: '100%'
+              }}
+              loading="lazy"
+            />
+          </div>
+        )}
       </div>
 
       <Footer visible={showFooter} />
