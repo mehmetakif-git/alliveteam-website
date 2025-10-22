@@ -520,7 +520,11 @@ function App() {
         )}
       </div>
 
-      <Footer visible={showFooter} />
+      <Footer
+        visible={showFooter}
+        setIsHoveringFooter={() => {}}
+        navigateToSection={navigateToSection}
+      />
 
       <button
         onClick={scrollToTop}
