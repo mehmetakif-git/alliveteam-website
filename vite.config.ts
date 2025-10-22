@@ -25,6 +25,14 @@ export default defineConfig({
           } catch (err) {
             console.warn(`Warning: Could not copy ${src}`);
           }
+
+          const srcMobile = resolve(assetsDir, `image${i}-mobile.jpg`);
+          const destMobile = resolve(distAssetsDir, `image${i}-mobile.jpg`);
+          try {
+            copyFileSync(srcMobile, destMobile);
+          } catch (err) {
+            console.warn(`Warning: Could not copy ${srcMobile}`);
+          }
         }
 
         const logoFiles = ['logo.png', 'logo.svg'];
