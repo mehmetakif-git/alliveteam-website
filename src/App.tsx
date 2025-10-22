@@ -21,6 +21,7 @@ function App() {
   const [showFooter, setShowFooter] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [contentVisible, setContentVisible] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
 
   const slogans = [
     { service: 'CATERING', slogan: 'Excellence in Every Bite' },
@@ -44,6 +45,15 @@ function App() {
     if (hash && ['about', 'services', 'contact'].includes(hash)) {
       setActiveSection(hash);
     }
+  }, []);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   useEffect(() => {
@@ -73,7 +83,7 @@ function App() {
           resolve();
         };
         img.onerror = () => resolve();
-        img.src = `/assets/image${imageNum}.jpg`;
+        img.src = `/assets/image${imageNum}${isMobile ? '-mobile' : ''}.jpg`;
       });
     });
 
@@ -88,7 +98,7 @@ function App() {
     }, 10000);
 
     return () => clearTimeout(fallbackTimer);
-  }, []);
+  }, [isMobile]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -457,7 +467,7 @@ function App() {
           >
             {loadedImages.has(imageNum) ? (
               <img
-                src={`/assets/image${imageNum}.jpg`}
+                src={`/assets/image${imageNum}${isMobile ? '-mobile' : ''}.jpg`}
                 alt={`Section ${imageNum}`}
                 className="w-full h-auto object-cover transition-all duration-700 ease-out"
                 style={{
@@ -491,7 +501,7 @@ function App() {
             }}
           >
             <img
-              src="/assets/image18.jpg"
+              src={`/assets/image18${isMobile ? '-mobile' : ''}.jpg`}
               alt="Contact 3"
               className="w-full h-auto object-cover"
               style={{
